@@ -1,2 +1,7 @@
 *.pyc
 venv/
+
+compiled-manifests
+compiled-manifests/*
+pulled-manifests
+pulled-manifests/*
