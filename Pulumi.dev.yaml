@@ -1,0 +1,5 @@
+encryptionsalt: v1:T/Bro6bRF8s=:v1:sJHfMUH3n2VAfev9:ofl0CwZPgYjpgnaEYiiGe0+cHe6Kyg==
+config:
+  local-renderer:environment: dev
+  local-renderer:namespace: local-dev
+  local-renderer:redisChartVersion: 18.0.0

@@ -39,3 +39,25 @@ pulumi preview
 ```
 
 Pulumi's local backend still requires a stack secrets manager, even when this project stores no secrets and only renders YAML. These demo stacks are intentionally initialized with an empty passphrase, so setting `PULUMI_CONFIG_PASSPHRASE=""` makes rendering non-interactive without requiring developers to know or share a password. Do not add secret values to `Pulumi.*.yaml`; inject them through your GitOps secret-management workflow instead.
+
+## 3. Stack Values
+
+Stack files are committed because they define the environment-specific render inputs. `Pulumi.dev.yaml` renders local/dev manifests:
+
+```yaml
+config:
+  local-renderer:environment: dev
+  local-renderer:namespace: local-dev
+  local-renderer:redisChartVersion: 18.0.0
+```
+
+`Pulumi.prod.yaml` renders production manifests:
+
+```yaml
+config:
+  local-renderer:environment: prod
+  local-renderer:namespace: production
+  local-renderer:redisChartVersion: 18.0.0
+```
+
+When you run `pulumi preview --stack dev` or `pulumi preview --stack prod`, `__main__.py` reads those values through Pulumi config and renders manifests for the selected stack. The compiled output directory is always derived from the stack name: `compiled-manifests/dev` for `dev`, `compiled-manifests/prod` for `prod`, and so on. This prevents one stack render from overwriting another stack's manifests.
