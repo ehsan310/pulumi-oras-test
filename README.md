@@ -21,20 +21,21 @@ Ensure your development workspace has the following tools installed:
 
 ## 2. Step-by-Step Workspace Initialization
 
-Run the following block in your terminal to bootstrap a clean workspace, configure Pulumi to execute locally without a cloud account SaaS login, and setup dependencies.
+Run the following from the checked-out repository root. This project already contains `Pulumi.yaml`, stack files, source manifests, and the Python entrypoint, so do **not** run `pulumi new` or scaffold an empty replacement project.
 
 ```bash
 # Force the Pulumi CLI to use your local storage drive for configuration records
 pulumi login --local
-export PULUMI_CONFIG_PASSPHRASE="my-test-secret-key"
+export PULUMI_CONFIG_PASSPHRASE=""
 
-# Create target directories
-mkdir -p pulumi-oras-gitops/raw-manifests
-cd pulumi-oras-gitops
-
-# Scaffold an empty Python program blueprint
-pulumi new python --name local-renderer --stack dev --yes
-
-# Activate the isolated shell environment and install the correct Kubernetes provider SDK
+# Activate an isolated shell environment and install this project's dependencies
+python -m venv venv
 source venv/bin/activate
-pip install pulumi-kubernetes==4.19.0
+pip install -r requirements.txt
+
+# Use the existing stack and render the manifests locally
+pulumi stack select dev
+pulumi preview
+```
+
+Pulumi's local backend still requires a stack secrets manager, even when this project stores no secrets and only renders YAML. These demo stacks are intentionally initialized with an empty passphrase, so setting `PULUMI_CONFIG_PASSPHRASE=""` makes rendering non-interactive without requiring developers to know or share a password. Do not add secret values to `Pulumi.*.yaml`; inject them through your GitOps secret-management workflow instead.
